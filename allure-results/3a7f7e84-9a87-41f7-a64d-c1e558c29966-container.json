@@ -1,0 +1,1 @@
+{"uuid":"3a7f7e84-9a87-41f7-a64d-c1e558c29966","name":"selenidetests.tests.HomPageTest","children":["f22da04b-f2a4-46ee-a9bc-0ca45af468d1"],"befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1745776228836,"stop":1745776235414}],"afters":[],"start":1745776228673,"stop":1745776252217}
