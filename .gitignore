@@ -48,3 +48,5 @@ build/
 .allure/
 .allure
 *.allure/
+allure-results
+allure-results/
