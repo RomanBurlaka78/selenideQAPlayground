@@ -26,16 +26,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser chromium-chromedriver
-          sudo ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
-          chrome --version
+          if [ ! -f /usr/bin/google-chrome ]; then
+            sudo ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
+          fi
+          chromium-browser --version
+          chromedriver --version
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
 
       - name: Run tests with Allure reporting
         run: |
@@ -47,36 +48,17 @@ jobs:
           test -f target/surefire-reports/TEST-*.xml || { echo "Error: No test results found"; exit 1; }
           [ -n "$(ls -A target/allure-results 2>/dev/null)" ] || echo "Warning: Allure results are empty"
 
-      - name: Upload screenshots on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenide-screenshots
-          path: |
-            build/reports/tests/
-            target/selenide-screenshots/
-
-      - name: Prepare Allure history
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
-
       - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
         if: always()
         with:
           allure_results: target/allure-results
-          gh_pages: gh-pages
-          allure_report: allure-report
-          allure_history: allure-history
+          allure_report: target/allure-report
 
       - name: Deploy Allure Report
-        if: success() || failure()
+        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-history
-          destination_dir: ./allure-history
+          publish_dir: target/allure-report
+          destination_dir: ./allure-report
