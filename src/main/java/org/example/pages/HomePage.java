@@ -9,6 +9,7 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class HomePage extends BasePage<HomePage>{
 
+
     /**
      *
      * @param name - name of required page

@@ -3,14 +3,24 @@ package selenidetests.base;
 import com.codeborne.selenide.Configuration;
 
 
+import org.example.pages.HomePage;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
+import selenidetests.tests.HomPageTest;
 import selenidetests.utils.DriverManager;
 import selenidetests.utils.Listener;
 
 @Listeners(Listener.class)
 public class BaseTest {
+
+    public HomePage getHomePage() {
+        HomePage homePage = new HomePage();
+        return homePage;
+    }
+
+
     protected final DriverManager driverManager = DriverManager.getInstance();
+
 
     @BeforeSuite
     public void createDriver() {

@@ -17,10 +17,10 @@ import static com.codeborne.selenide.Selenide.$$;
 @Listeners()
 public class HomPageTest extends BaseTest {
 
-    private HomePage homePage;
+
     @Test
     public void testVerifyHomePage() {
-        new HomePage()
+        getHomePage()
                 .open()
                 .pageTitleShouldBeSameAs("Playground for the QA automation engineers");
 
