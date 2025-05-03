@@ -1,4 +1,4 @@
-name: Java CI with Selenide and Allure
+name: Java CI with Selenide
 
 on:
   push:
@@ -10,6 +10,7 @@ jobs:
   test:
     name: Run Selenide Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
@@ -22,15 +23,10 @@ jobs:
           distribution: 'corretto'
           cache: 'maven'
 
-      - name: Install Chrome and ChromeDriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
-          if [ ! -f /usr/bin/google-chrome ]; then
-            sudo ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
-          fi
-          chromium-browser --version
-          chromedriver --version
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'latest'
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
@@ -38,27 +34,23 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-      - name: Run tests with Allure reporting
+      - name: Run tests
         run: |
-          mvn clean test -Pci
-          mkdir -p target/allure-results target/surefire-reports
+          # Устанавливаем уникальный каталог для данных пользователя
+          export SELENIDE_REMOTE="--user-data-dir=/tmp/chrome-profile-$GITHUB_RUN_ID"
+          export SELENIDE_DOWNLOAD_FOLDER=/tmp/chrome-downloads-$GITHUB_RUN_ID
+          
+          mvn clean test -Pci \
+            -Dselenide.headless=true \
+            -Dselenide.browserSize=1920x1080 \
+            -Dselenide.remote="$SELENIDE_REMOTE" \
+            -Dselenide.downloadsFolder="$SELENIDE_DOWNLOAD_FOLDER"
 
-      - name: Verify test results
-        run: |
-          test -f target/surefire-reports/TEST-*.xml || { echo "Error: No test results found"; exit 1; }
-          [ -n "$(ls -A target/allure-results 2>/dev/null)" ] || echo "Warning: Allure results are empty"
-
-      - name: Generate Allure report
-        uses: simple-elf/allure-report-action@master
+      - name: Upload test reports
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          allure_results: target/allure-results
-          allure_report: target/allure-report
-
-      - name: Deploy Allure Report
-        if: always()
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/allure-report
-          destination_dir: ./allure-report
+          name: test-reports
+          path: |
+            target/surefire-reports/
+            target/allure-results/

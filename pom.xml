@@ -14,6 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <allure.version>2.29.0</allure.version>
         <aspectj.version>1.9.22</aspectj.version>
+        <selenide.headless>true</selenide.headless>
+        <selenide.browser>chrome</selenide.browser>
     </properties>
 
 
