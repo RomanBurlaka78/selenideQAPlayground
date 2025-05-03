@@ -28,16 +28,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'corretto'
-          cache: 'maven'
+      - name: Create config directory
+        run: |
+          mkdir -p ./config
+          mkdir -p ./video
+          sudo chmod -R 777 ./config
+          sudo chmod -R 777 ./video
 
       - name: Prepare Selenoid config
         run: |
-          mkdir -p /tmp/config
           echo '{
             "chrome": {
               "default": "latest",
@@ -51,7 +50,14 @@ jobs:
                 }
               }
             }
-          }' > /tmp/config/browsers.json
+          }' > ./config/browsers.json
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'maven'
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
