@@ -2,15 +2,22 @@ name: Java CI with Selenide and Allure
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
+    services:
+      selenium:
+        image: seleniarm/standalone-chromium
+        ports:
+          - 4444:4444
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -33,7 +40,10 @@ jobs:
       - name: Run tests with Maven
         run: mvn --batch-mode --update-snapshots clean test
         env:
-          CI: true  # Для Selenide, чтобы автоматически настраивал под CI
+          CI: true
+          SELENIDE_BROWSER: chrome
+          SELENIDE_REMOTE: http://localhost:4444/wd/hub
+          SELENIDE_HEADLESS: true
 
       - name: Collect test artifacts
         if: always()
@@ -56,10 +66,10 @@ jobs:
           ignore_unknown_options: true
 
       - name: Deploy Allure Report
-        if: success() || failure()  # Более явное условие
+        if: success() || failure()
         uses: peaceiris/actions-gh-pages@v3
         env:
           ACTIONS_DEPLOY_KEY: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: ./target/allure-report
-          KEEP_HISTORY: true  # Сохранять историю отчетов
+          KEEP_HISTORY: true
