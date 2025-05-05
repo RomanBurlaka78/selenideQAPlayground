@@ -15,6 +15,9 @@ jobs:
         image: seleniarm/standalone-chromium
         ports:
           - 4444:4444
+        options: >-
+          --shm-size=2g
+          -e SE_OPTS="--allow-root --disable-dev-shm-usage --no-sandbox"
 
     steps:
       - name: Checkout code
@@ -44,6 +47,13 @@ jobs:
           SELENIDE_BROWSER: chrome
           SELENIDE_REMOTE: http://localhost:4444/wd/hub
           SELENIDE_HEADLESS: true
+          TZ: UTC
+          CHROME_OPTS: >-
+            --disable-dev-shm-usage
+            --no-sandbox
+            --disable-gpu
+            --user-data-dir=/tmp/chrome-profile-${{ github.run_id }}
+            --remote-debugging-port=9222
 
       - name: Collect test artifacts
         if: always()
