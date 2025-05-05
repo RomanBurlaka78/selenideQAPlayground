@@ -7,30 +7,35 @@ on:
     branches: [ main ]
 
 jobs:
-  compile-java-code:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up JDK
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-      - name: Maven cache
+
+      - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven
+          path: |
+            ~/.m2
+            target/allure-results
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven
-      - name: Build
+            ${{ runner.os }}-maven-
+
+      - name: Run tests with Maven
         run: mvn --batch-mode --update-snapshots clean test
+        env:
+          CI: true  # Для Selenide, чтобы автоматически настраивал под CI
 
-
-
-      - name: Upload test artifacts
+      - name: Collect test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -40,19 +45,21 @@ jobs:
             target/surefire-reports/
             target/allure-results/
             ./video/
+          retention-days: 3
 
       - name: Generate Allure report
-        uses: simple-elf/allure-report-action@master
         if: always()
-        id: allure-report
+        uses: simple-elf/allure-report-action@master
         with:
           allure_results: target/allure-results
           allure_report: target/allure-report
+          ignore_unknown_options: true
 
       - name: Deploy Allure Report
-        if: always()
+        if: success() || failure()  # Более явное условие
         uses: peaceiris/actions-gh-pages@v3
         env:
           ACTIONS_DEPLOY_KEY: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: ./target/allure-report
+          KEEP_HISTORY: true  # Сохранять историю отчетов
