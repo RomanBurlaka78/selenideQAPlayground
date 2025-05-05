@@ -5,6 +5,7 @@ import com.codeborne.selenide.ElementsCollection;
 
 
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.page;
 
 
 public class HomePage extends BasePage<HomePage>{
@@ -23,7 +24,6 @@ public class HomePage extends BasePage<HomePage>{
 
         return  page;
     }
-
 
 
 

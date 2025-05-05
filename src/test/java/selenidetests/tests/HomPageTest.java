@@ -1,9 +1,10 @@
 package selenidetests.tests;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Screenshots;
 import com.codeborne.selenide.Selenide;
 
-import org.example.pages.BasePage;
+//import org.example.pages.BasePage;
 import org.example.pages.DynamicPage;
 import org.example.pages.HomePage;
 import org.openqa.selenium.By;
@@ -14,8 +15,9 @@ import selenidetests.base.BaseTest;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-@Listeners()
+
 public class HomPageTest extends BaseTest {
+
 
 
     @Test

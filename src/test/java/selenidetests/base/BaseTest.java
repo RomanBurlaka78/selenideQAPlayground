@@ -11,9 +11,9 @@ import selenidetests.utils.DriverManager;
 import selenidetests.utils.Listener;
 
 @Listeners(Listener.class)
-public class BaseTest {
+public abstract class BaseTest {
 
-    public HomePage getHomePage() {
+    public  HomePage getHomePage() {
         HomePage homePage = new HomePage();
         return homePage;
     }
@@ -33,6 +33,5 @@ public class BaseTest {
 
         driverManager.initDriver();
     }
-
 
 }

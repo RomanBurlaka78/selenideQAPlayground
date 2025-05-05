@@ -10,7 +10,8 @@ import org.openqa.selenium.By;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class BasePage<T> {
+
+public abstract class BasePage<T>  {
     public T page;
 
     public T open() {

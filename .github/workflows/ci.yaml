@@ -7,85 +7,28 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
-    name: Run Selenide Tests with Selenoid
+  compile-java-code:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    services:
-      selenoid:
-        image: aerokube/selenoid:latest-release
-        ports:
-          - 4444:4444
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - ./video:/opt/selenoid/video
-          - ./config:/etc/selenoid
-        env:
-          OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
-        options: --privileged
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create directories
-        run: |
-          mkdir -p ./config ./video
-          sudo chmod -R 777 ./config ./video
-
-      - name: Prepare Selenoid config
-        run: |
-          echo '{
-            "chrome": {
-              "default": "latest",
-              "versions": {
-                "latest": {
-                  "image": "selenoid/chrome:latest",
-                  "port": "4444",
-                  "path": "/",
-                  "env": ["TZ=UTC"],
-                  "volumes": ["/tmp/selenoid:/data"]
-                }
-              }
-            }
-          }' > ./config/browsers.json
-
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: '17'
-          distribution: 'corretto'
           cache: 'maven'
-
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
+      - name: Maven cache
+        uses: actions/cache@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2
+          key: ${{ runner.os }}-maven
+          restore-keys: |
+            ${{ runner.os }}-maven
+      - name: Build
+        run: mvn --batch-mode --update-snapshots clean test
 
-      - name: Run tests with Selenoid
-        run: |
-          mvn clean test \
-            -Dselenide.remote=http://selenoid:4444/wd/hub \
-            -Dselenide.browser=chrome \
-            -Dselenide.browserSize=1920x1080 \
-            -Dselenide.timeout=10000 \
-            -Dmaven.test.failure.ignore=true
 
-      - name: Verify test results
-        run: |
-          test -f target/surefire-reports/TEST-*.xml || { echo "Error: No test results found"; exit 1; }
-          [ -n "$(ls -A target/allure-results 2>/dev/null)" ] || echo "Warning: Allure results are empty"
-
-      - name: Cleanup Docker containers
-        if: always()
-        run: |
-          docker ps -aq --filter "ancestor=selenoid/chrome" | xargs -r docker stop || true
-          docker ps -aq | xargs -r docker rm -f || true
-          docker volume prune -f || true
 
       - name: Upload test artifacts
         if: always()

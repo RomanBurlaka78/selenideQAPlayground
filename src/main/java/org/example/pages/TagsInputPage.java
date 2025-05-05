@@ -1,21 +1,16 @@
 package org.example.pages;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.CollectionCondition.size;
 
-public class TagsInputPage extends BasePage {
+public class TagsInputPage extends BasePage<TagsInputPage> {
     ElementsCollection allTags = $$("div[class='content'] ul li i");
     SelenideElement input = $("div[class='content'] ul input");
     SelenideElement removeButton = $(By.xpath("//button[text()]"));

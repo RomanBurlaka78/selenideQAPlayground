@@ -8,7 +8,7 @@ import static com.codeborne.selenide.CollectionCondition.size;
 
 import static com.codeborne.selenide.Selenide.$$;
 
-public class DynamicPage extends BasePage{
+public class DynamicPage extends BasePage<DynamicPage>{
     private ElementsCollection itemsList= $$("tbody[id= 'tbody'] tr");
 
     /**
