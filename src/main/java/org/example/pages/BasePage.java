@@ -32,5 +32,12 @@ public abstract class BasePage<T>  {
         return (T) this;
     }
 
+    @Step("h1 should have title : {}")
+    public T h1ShouldHaveTitle(String title) {
+        $("h1").shouldHave(Condition.innerText(title));
+
+        return (T) this;
+    }
+
 
 }

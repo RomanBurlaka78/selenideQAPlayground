@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  tests:
+    build: .
+    image: selenide-playground
+    container_name: selenide-test-container
+    volumes:
+      - ./target/allure-results:/app/target/allure-results
+
+
+
