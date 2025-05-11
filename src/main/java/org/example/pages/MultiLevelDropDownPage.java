@@ -5,9 +5,8 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static java.nio.file.Files.size;
+
 
 public class MultiLevelDropDownPage extends BasePage<MultiLevelDropDownPage> {
     ElementsCollection icons = $$("a[class ='icon-button']");
@@ -22,5 +21,13 @@ public class MultiLevelDropDownPage extends BasePage<MultiLevelDropDownPage> {
         meuItem.shouldHave().find(Condition.innerText(items)).click();
 
         return this;
+    }
+
+    @Step("show dropdown items : {items}")
+    public void showDropDownItems() {
+        SelenideElement shevron = icons.get(3);
+        shevron.click();
+        meuItem.forEach(SelenideElement::text);
+
     }
 }

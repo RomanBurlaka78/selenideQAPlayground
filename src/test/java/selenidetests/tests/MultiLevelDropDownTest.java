@@ -43,4 +43,12 @@ public class MultiLevelDropDownTest extends BaseTest {
                 .goToPage("Multi Level Dropdown", new MultiLevelDropDownPage())
                 .getDropdown("Settings", items);
     }
+    @Test
+    public  void showDropDown(){
+        getHomePage()
+                .open()
+                .goToPage("Multi Level Dropdown", new MultiLevelDropDownPage())
+                .showDropDownItems();
+
+    }
 }
