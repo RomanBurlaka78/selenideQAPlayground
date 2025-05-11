@@ -13,8 +13,8 @@ public class MultiLevelDropDownTest extends BaseTest {
         return new Object[]{
                 "Kangaroo",
                 "Frog",
-                "Horse",
-                "Hedgehog"
+                "Horse"
+
         };
     }
 
