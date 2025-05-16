@@ -15,8 +15,8 @@ public class OpenNewTabTest extends BaseTest {
                 .pageTitleShouldBeSameAs("Test New Tab")
                 .openNewTabPage("New Page")
                 .pageTitleShouldBeSameAs("New Page");
-
-
     }
+
+
 
 }

@@ -53,7 +53,7 @@ public class TagsInputPage extends BasePage<TagsInputPage> {
     public int tagsRemaining(){
        String getTags =  $("div[class = 'details'] p").getText();
        String resultTags =getTags.replaceAll("[^0-9]", "");
-
-       return Integer.parseInt(resultTags);
+       int number = Integer.parseInt(resultTags);
+       return number;
     }
 }

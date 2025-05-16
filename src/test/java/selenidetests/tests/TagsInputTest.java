@@ -48,7 +48,7 @@ public class TagsInputTest extends BaseTest {
                 .shouldHaveTags(0);
     }
 
-    @Test
+    @Test(description = "delete all tags")
     public void testGetTagsRemaining() {
     int remaining = homePage
                 .open()

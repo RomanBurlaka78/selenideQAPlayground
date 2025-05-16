@@ -7,8 +7,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.*;
 
 
 public abstract class BasePage<T>  {
@@ -31,10 +30,17 @@ public abstract class BasePage<T>  {
 
         return (T) this;
     }
-
-    @Step("h1 should have title : {}")
+    @Attachment("attachment show : [{title}]")
+    @Step("h1 should have title : {title}")
     public T h1ShouldHaveTitle(String title) {
         $("h1").shouldHave(Condition.innerText(title));
+
+        return (T) this;
+    }
+
+    @Step("switch to page {title}")
+    public T switchToFrame(String title) {
+        switchTo().frame(title);
 
         return (T) this;
     }
