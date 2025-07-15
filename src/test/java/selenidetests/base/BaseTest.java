@@ -14,8 +14,7 @@ import selenidetests.utils.Listener;
 public abstract class BaseTest {
 
     public  HomePage getHomePage() {
-        HomePage homePage = new HomePage();
-        return homePage;
+        return new HomePage();
     }
 
 
