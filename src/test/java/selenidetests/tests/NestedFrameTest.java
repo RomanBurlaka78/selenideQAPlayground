@@ -7,7 +7,7 @@ import selenidetests.base.BaseTest;
 public class NestedFrameTest extends BaseTest {
 
     @Test
-    public  void showNestedFrame(){
+    public  void testShowNestedFrame(){
         getHomePage()
                 .open()
                 .goToPage("Nested Iframe", new NestedFramePage())
@@ -15,7 +15,7 @@ public class NestedFrameTest extends BaseTest {
     }
 
     @Test
-    public  void goToSecondNestedFrame(){
+    public  void testGoToSecondNestedFrame(){
         getHomePage()
                 .open()
                 .goToPage("Nested Iframe", new NestedFramePage())
